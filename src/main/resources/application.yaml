@@ -1,6 +1,15 @@
 spring:
   application:
     name: zulu
+  datasource:
+    url: jdbc:postgresql://localhost:5432/file_storage
+    username:
+    password:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
 
 minio:
     url: http://localhost:9000

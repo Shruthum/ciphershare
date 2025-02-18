@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.ciphershare.v1.configuration.MinIOConfigProperties;
+import com.ciphershare.v1.entity.FileMetaData;
+import com.ciphershare.v1.repository.FileMetaDataRepository;
+
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
@@ -17,10 +20,12 @@ public class MinioService {
 
     @Autowired
     private MinioClient minioClient;
+    @Autowired
+    private FileMetaDataRepository fileMetaDataRepository;
     private MinIOConfigProperties minIOConfigProperties;
     private final String bucketName = minIOConfigProperties.getBucketName();
 
-    public String uploadFile(MultipartFile file){
+    public String uploadFile(MultipartFile file,String username){
         try{
             String filename = UUID.randomUUID()+"_"+ file.getOriginalFilename();
             minioClient.putObject(
@@ -28,9 +33,20 @@ public class MinioService {
                     .bucket(bucketName)
                     .object(filename)
                     .stream(file.getInputStream(), file.getSize(), -1)
+                    .contentType(file.getContentType())
                     .build()
             );
+
+            FileMetaData filemetaData = new FileMetaData();
+            filemetaData.setFileName(filename);
+            filemetaData.setFileSize(file.getSize());
+            filemetaData.setFileType(file.getContentType());
+            filemetaData.setUploadedBy(username);
+            filemetaData.setStoragePath(filename);
+
+            fileMetaDataRepository.save(filemetaData);
             return filename;
+
         }catch(Exception e){
             throw new RuntimeException("Error Uploading file: "+e.getMessage());
         }

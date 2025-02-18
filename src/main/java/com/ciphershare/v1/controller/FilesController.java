@@ -2,6 +2,8 @@ package com.ciphershare.v1.controller;
 
 
 import java.io.InputStream;
+import java.util.List;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.ciphershare.v1.entity.FileMetaData;
+import com.ciphershare.v1.repository.FileMetaDataRepository;
 import com.ciphershare.v1.service.MinioService;
 
 
@@ -21,6 +26,8 @@ public class FilesController {
 
     @Autowired
     private MinioService minioService;
+    @Autowired
+    private FileMetaDataRepository fileMetaDataRepository;
 
     @RequestMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("username") String username){
@@ -48,5 +55,15 @@ public class FilesController {
     public ResponseEntity<String> deleteFile(@PathVariable String fileName){
         minioService.deleteFile(fileName);
         return ResponseEntity.ok("File Deleted: "+fileName);
+    }
+
+    @GetMapping("/metadata")
+    public List<FileMetaData> getAllFiles(){
+        return fileMetaDataRepository.findAll();
+    }
+
+    @GetMapping("/metadata/{username}")
+    public List<FileMetaData> getFilesByUser(@PathVariable String username){
+        return fileMetaDataRepository.findByUploadedBy(username);
     }
 }

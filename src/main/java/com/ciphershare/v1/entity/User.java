@@ -1,4 +1,4 @@
-package com.drivochat.v1.entity;
+package com.ciphershare.v1.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

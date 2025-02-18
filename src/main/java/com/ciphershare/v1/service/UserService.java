@@ -1,4 +1,4 @@
-package com.drivochat.v1.service;
+package com.ciphershare.v1.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.drivochat.v1.entity.User;
-import com.drivochat.v1.repository.UserRepository;
+import com.ciphershare.v1.entity.User;
+import com.ciphershare.v1.repository.UserRepository;
 
 @Service
 public class UserService {

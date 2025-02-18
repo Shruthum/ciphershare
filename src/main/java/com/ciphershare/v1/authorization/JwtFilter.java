@@ -1,4 +1,4 @@
-package com.drivochat.v1.authorization;
+package com.ciphershare.v1.authorization;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.drivochat.v1.component.JwtProvider;
+import com.ciphershare.v1.component.JwtProvider;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

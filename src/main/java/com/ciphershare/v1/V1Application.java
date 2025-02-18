@@ -1,4 +1,4 @@
-package com.drivochat.v1;
+package com.ciphershare.v1;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

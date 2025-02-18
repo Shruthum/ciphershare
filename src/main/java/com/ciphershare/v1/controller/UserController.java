@@ -1,4 +1,4 @@
-package com.drivochat.v1.controller;
+package com.ciphershare.v1.controller;
 
 
 import java.util.Map;
@@ -7,14 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.ciphershare.v1.component.JwtProvider;
+import com.ciphershare.v1.entity.User;
+import com.ciphershare.v1.service.UserService;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
-import com.drivochat.v1.component.JwtProvider;
-import com.drivochat.v1.entity.User;
-import com.drivochat.v1.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 
 

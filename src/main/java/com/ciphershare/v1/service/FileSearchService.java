@@ -13,6 +13,7 @@ import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.common.xcontent.XContentFactory;
 import org.opensearch.core.xcontent.XContentBuilder;
+import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.builder.SearchSourceBuilder;
@@ -76,4 +77,44 @@ public class FileSearchService {
             throw new RuntimeException("Error while searching files "+e.getMessage());
         }
     }
+
+    public List<FileMetaData> searchFiles(String keyword,int page,int size){
+        try {
+
+            int start = (page - 1) * size;
+
+            BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+
+            if(keyword != null && !keyword.isEmpty()){
+
+                queryBuilder.must(QueryBuilders.matchQuery("keyword",keyword));
+
+            }else{
+
+                queryBuilder.must(QueryBuilders.matchAllQuery());
+
+            }
+
+            SearchRequest searchRequest = new SearchRequest(INDEX_PROVIDER);
+
+            SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder().query(QueryBuilders.multiMatchQuery(queryBuilder)).from(start).size(size);
+
+            searchRequest.source(searchSourceBuilder);
+
+            SearchResponse searchResponse = restHighLevelClient.search(searchRequest,RequestOptions.DEFAULT);
+
+            List<FileMetaData> results = new ArrayList<>();
+            for(SearchHit hit : searchResponse.getHits().getHits()){
+
+                Map<String,Object> map = hit.getSourceAsMap();
+                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"), null, (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")));
+                results.add(metadata);
+            }
+
+            return results;
+        } catch (Exception e) {
+            throw new RuntimeException("Error while searching files "+e.getMessage());
+        }
+    }
+
 }

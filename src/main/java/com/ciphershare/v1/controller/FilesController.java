@@ -23,8 +23,9 @@ public class FilesController {
     private MinioService minioService;
 
     @RequestMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file){
-        String fileName = minioService.uploadFile(file);
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("username") String username){
+
+        String fileName = minioService.uploadFile(file,username);
         return ResponseEntity.ok("File Uploaded: *"+fileName.substring(1, fileName.length()/2)+"**");
     }
 
@@ -45,7 +46,7 @@ public class FilesController {
 
     @GetMapping("/delete/{fileName}")
     public ResponseEntity<String> deleteFile(@PathVariable String fileName){
-        minioService.downloadFile(fileName);
+        minioService.deleteFile(fileName);
         return ResponseEntity.ok("File Deleted: "+fileName);
     }
 }

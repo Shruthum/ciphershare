@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ciphershare.v1.entity.FileMetaData;
 import com.ciphershare.v1.repository.FileMetaDataRepository;
+import com.ciphershare.v1.service.FileSearchService;
 import com.ciphershare.v1.service.MinioService;
 
 
@@ -28,6 +29,8 @@ public class FilesController {
     private MinioService minioService;
     @Autowired
     private FileMetaDataRepository fileMetaDataRepository;
+    @Autowired
+    private FileSearchService fileSearchService;
 
     @RequestMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("username") String username){
@@ -66,4 +69,13 @@ public class FilesController {
     public List<FileMetaData> getFilesByUser(@PathVariable String username){
         return fileMetaDataRepository.findByUploadedBy(username);
     }
+
+    @GetMapping("/search")
+    public List<FileMetaData> searchFiles(@RequestParam String keyword,@RequestParam String page,@RequestParam String size) {
+        if(page != null && size != null){
+            return fileSearchService.searchFiles(keyword, Integer.parseInt(page),Integer.parseInt(size));
+        }
+        return fileSearchService.searchFiles(keyword);
+    }
+
 }

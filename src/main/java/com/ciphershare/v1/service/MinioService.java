@@ -22,6 +22,9 @@ public class MinioService {
     private MinioClient minioClient;
     @Autowired
     private FileMetaDataRepository fileMetaDataRepository;
+    @Autowired
+    private FileSearchService fileSearchService;
+
     private MinIOConfigProperties minIOConfigProperties;
     private final String bucketName = minIOConfigProperties.getBucketName();
 
@@ -45,6 +48,8 @@ public class MinioService {
             filemetaData.setStoragePath(filename);
 
             fileMetaDataRepository.save(filemetaData);
+            fileSearchService.indexFileMetaData(filemetaData);
+
             return filename;
 
         }catch(Exception e){

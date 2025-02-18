@@ -1,4 +1,4 @@
-package com.drivochat.v1;
+package com.ciphershare.v1;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

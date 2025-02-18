@@ -1,4 +1,4 @@
-package com.drivochat.v1.component;
+package com.ciphershare.v1.component;
 
 import java.util.Date;
 import io.jsonwebtoken.Jwts;

@@ -20,6 +20,7 @@ import org.opensearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ciphershare.v1.entity.FileMetaData;
+import com.ciphershare.v1.entity.FileMetaData.Access;
 
 
 @Service
@@ -40,6 +41,7 @@ public class FileSearchService {
                                     .field("storagePath",fileMetaData.getStoragePath())
                                     .field("fileSize",fileMetaData.getFileSize())
                                     .field("fileType",fileMetaData.getFileType())
+                                    .field("access",fileMetaData.getAccess().toString())
                                 .endObject();
     }
     public void indexFileMetaData(FileMetaData fileMetaData) {
@@ -68,7 +70,7 @@ public class FileSearchService {
             for(SearchHit hit : searchResponse.getHits().getHits()){
 
                 Map<String,Object> map = hit.getSourceAsMap();
-                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"), null, (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")));
+                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"),Long.parseLong((String) map.get("fileSize")), (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")),Access.valueOf((String) map.get("access")));
                 results.add(metadata);
             }
 
@@ -107,7 +109,7 @@ public class FileSearchService {
             for(SearchHit hit : searchResponse.getHits().getHits()){
 
                 Map<String,Object> map = hit.getSourceAsMap();
-                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"), null, (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")));
+                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"),Long.parseLong((String) map.get("fileSize")), (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")),Access.valueOf((String) map.get("access")));
                 results.add(metadata);
             }
 

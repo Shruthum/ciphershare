@@ -3,6 +3,8 @@ package com.ciphershare.v1.entity;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,7 +30,15 @@ public class FileMetaData {
     private String uploadedBy;
     private LocalDateTime uploadTime;
 
+    @Enumerated(EnumType.STRING)
+    private Access access;
+
+    public enum Access{
+        PRIVATE,PUBLIC
+    }
+
     public FileMetaData(){
         this.uploadTime = LocalDateTime.now();
+        this.access = Access.PRIVATE;
     }
 }

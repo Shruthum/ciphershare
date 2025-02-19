@@ -1,5 +1,6 @@
 package com.ciphershare.v1.service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
@@ -18,12 +19,13 @@ public class FileSharingService {
     @Autowired
     private EnvService envService;
 
-    public String generatePublicLink(Long fileMetadataId){
+    public String generatePublicLink(Long fileMetadataId,int expiry){
 
         Optional<FileMetaData> file = fileMetaDataRepository.findById(fileMetadataId);
         if(file.isPresent()){
             FileMetaData fileMetaData = file.get();
             fileMetaData.setAccess(Access.PUBLIC);
+            fileMetaData.setExpireTime(LocalDateTime.now().plusMinutes(expiry));
             fileMetaDataRepository.save(fileMetaData);
 
             return ""+envService.getInstanceIP()+":8080/files/download/"+fileMetaData.getFileName();

@@ -70,7 +70,7 @@ public class FileSearchService {
             for(SearchHit hit : searchResponse.getHits().getHits()){
 
                 Map<String,Object> map = hit.getSourceAsMap();
-                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"),Long.parseLong((String) map.get("fileSize")), (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")),Access.valueOf((String) map.get("access")));
+                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"),Long.parseLong((String) map.get("fileSize")), (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")),LocalDateTime.parse((String) map.get("expireTime")),Access.valueOf((String) map.get("access")));
                 results.add(metadata);
             }
 
@@ -109,7 +109,7 @@ public class FileSearchService {
             for(SearchHit hit : searchResponse.getHits().getHits()){
 
                 Map<String,Object> map = hit.getSourceAsMap();
-                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"),Long.parseLong((String) map.get("fileSize")), (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")),Access.valueOf((String) map.get("access")));
+                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"),Long.parseLong((String) map.get("fileSize")), (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")),LocalDateTime.parse((String) map.get("expireTime")),Access.valueOf((String) map.get("access")));
                 results.add(metadata);
             }
 

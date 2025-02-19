@@ -84,9 +84,9 @@ public class FilesController {
     }
 
     @PostMapping("/share/{fileId}")
-    public ResponseEntity<String> generatePublicLink(@PathVariable Long fileId){
+    public ResponseEntity<String> generatePublicLink(@PathVariable Long fileId,@RequestParam int expiry){
 
-        String generated_link = fileSharingService.generatePublicLink(fileId);
+        String generated_link = fileSharingService.generatePublicLink(fileId,expiry);
         return ResponseEntity.ok("Public Link generated: "+generated_link);
     }
 

@@ -29,7 +29,7 @@ public class FileMetaData {
     private String storagePath;
     private String uploadedBy;
     private LocalDateTime uploadTime;
-
+    private LocalDateTime expireTime;
     @Enumerated(EnumType.STRING)
     private Access access;
 
@@ -40,5 +40,9 @@ public class FileMetaData {
     public FileMetaData(){
         this.uploadTime = LocalDateTime.now();
         this.access = Access.PRIVATE;
+    }
+
+    public boolean isExpired(){
+        return expireTime != null && expireTime.isBefore(LocalDateTime.now());
     }
 }

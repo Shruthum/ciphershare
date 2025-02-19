@@ -7,16 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.ciphershare.v1.component.JwtProvider;
 import com.ciphershare.v1.entity.User;
 import com.ciphershare.v1.service.UserService;
-
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
+
+
 
 
 @Controller
@@ -25,12 +21,9 @@ public class UserController {
 
     @Autowired
     private UserService userservice;
+
     @Autowired
-    private UserDetailsService userDetailsService;
-    @Autowired
-    private AuthenticationManager authManager;
-    @Autowired
-    private JwtProvider jwtProvider;
+    private BCryptPasswordEncoder passwordencoder;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Map<String,String> request){
@@ -49,16 +42,21 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String,String> request){
+
         String username = request.get("username");
         String password = request.get("password");
-        authManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        User user = userservice.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        final String generatedJwtToken = jwtProvider.generateToken(userDetails.getUsername());
+        if(!passwordencoder.matches(password,user.getPassword())){
+            throw new RuntimeException("Invalid Credentials");
+        }
 
+        String generatedJwtToken = userservice.loginservice(username, password);
         return ResponseEntity.ok(Map.of("token",generatedJwtToken));
     }
+
 
 
 }

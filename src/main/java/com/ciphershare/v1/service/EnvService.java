@@ -14,4 +14,7 @@ public class EnvService {
     public String getInstanceIP(){
         return dotenv.get("INSTANCE_IP");
     }
+    public String getsecretKey(){
+        return dotenv.get("SECRET_KEY");
+    }
 }

@@ -1,10 +1,13 @@
 package com.ciphershare.v1.entity;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,6 +36,8 @@ public class FileMetaData {
     @Enumerated(EnumType.STRING)
     private Access access;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<String> sharedwithUsers;
     public enum Access{
         PRIVATE,PUBLIC
     }
@@ -44,5 +49,9 @@ public class FileMetaData {
 
     public boolean isExpired(){
         return expireTime != null && expireTime.isBefore(LocalDateTime.now());
+    }
+
+    public boolean isAccessible(String username){
+        return uploadedBy.equals(username) || sharedwithUsers.contains(username);
     }
 }

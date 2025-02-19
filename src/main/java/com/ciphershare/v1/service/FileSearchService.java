@@ -3,6 +3,7 @@ package com.ciphershare.v1.service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,7 @@ public class FileSearchService {
                                     .field("fileSize",fileMetaData.getFileSize())
                                     .field("fileType",fileMetaData.getFileType())
                                     .field("access",fileMetaData.getAccess().toString())
+                                    .field("sharedwithUsers",fileMetaData.getSharedwithUsers().toString())
                                 .endObject();
     }
     public void indexFileMetaData(FileMetaData fileMetaData) {
@@ -70,7 +72,7 @@ public class FileSearchService {
             for(SearchHit hit : searchResponse.getHits().getHits()){
 
                 Map<String,Object> map = hit.getSourceAsMap();
-                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"),Long.parseLong((String) map.get("fileSize")), (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")),LocalDateTime.parse((String) map.get("expireTime")),Access.valueOf((String) map.get("access")));
+                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"),Long.parseLong((String) map.get("fileSize")), (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")),LocalDateTime.parse((String) map.get("expireTime")),Access.valueOf((String) map.get("access")),Collections.singleton((String)map.get("sharedwithUsers")));
                 results.add(metadata);
             }
 
@@ -109,7 +111,7 @@ public class FileSearchService {
             for(SearchHit hit : searchResponse.getHits().getHits()){
 
                 Map<String,Object> map = hit.getSourceAsMap();
-                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"),Long.parseLong((String) map.get("fileSize")), (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")),LocalDateTime.parse((String) map.get("expireTime")),Access.valueOf((String) map.get("access")));
+                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"),Long.parseLong((String) map.get("fileSize")), (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")),LocalDateTime.parse((String) map.get("expireTime")),Access.valueOf((String) map.get("access")),Collections.singleton((String)map.get("sharedwithUsers")));
                 results.add(metadata);
             }
 

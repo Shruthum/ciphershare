@@ -37,7 +37,7 @@ public class FilesController {
     @Autowired
     private FileSharingService fileSharingService;
 
-    @RequestMapping("/upload")
+    @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("username") String username){
 
         String fileName = minioService.uploadFile(file,username);

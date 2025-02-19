@@ -11,13 +11,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ciphershare.v1.entity.FileMetaData;
+import com.ciphershare.v1.entity.FileMetaData.Access;
 import com.ciphershare.v1.repository.FileMetaDataRepository;
 import com.ciphershare.v1.service.FileSearchService;
+import com.ciphershare.v1.service.FileSharingService;
 import com.ciphershare.v1.service.MinioService;
 
 
@@ -31,6 +34,8 @@ public class FilesController {
     private FileMetaDataRepository fileMetaDataRepository;
     @Autowired
     private FileSearchService fileSearchService;
+    @Autowired
+    private FileSharingService fileSharingService;
 
     @RequestMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("username") String username){
@@ -78,4 +83,21 @@ public class FilesController {
         return fileSearchService.searchFiles(keyword);
     }
 
+    @PostMapping("/share/{fileId}")
+    public ResponseEntity<String> generatePublicLink(@PathVariable Long fileId){
+
+        String generated_link = fileSharingService.generatePublicLink(fileId);
+        return ResponseEntity.ok("Public Link generated: "+generated_link);
+    }
+
+    @PostMapping("/access/{fileId}")
+    public ResponseEntity<String> setFileAcess(@PathVariable Long fileId,@RequestParam String access){
+
+        if(access.equals("private")){
+            fileSharingService.revokePublicAccess(fileId);
+            return ResponseEntity.ok("File access revoked");
+        }
+        fileSharingService.setFileAccess(fileId, Access.valueOf(access));
+        return ResponseEntity.ok("File Access updated to: "+access);
+    }
 }

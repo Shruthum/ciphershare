@@ -68,13 +68,23 @@ public class FilesController {
 
     @PostMapping("/version/{filemetaDataId}")
     public ResponseEntity<String> uploadNewVersion(@PathVariable String filemetaDataId,@RequestParam("file") MultipartFile file){
-        try {
 
+        try {
             minioService.uploadNewVersionFile(filemetaDataId, file);
             return ResponseEntity.ok("New Version of File Uploaded Successfully!");
 
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    public ResponseEntity<String> rollbackFile(@PathVariable String filemetaDataId,@RequestParam String version){
+
+        try{
+            minioService.rollbackFile(filemetaDataId, Integer.parseInt(version));
+            return ResponseEntity.ok("File restored to specified version");
+        }catch(Exception e){
+            return ResponseEntity.internalServerError().body("Cannot rollback");
         }
 
     }

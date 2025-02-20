@@ -2,7 +2,6 @@ package com.ciphershare.v1.entity;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -47,7 +46,7 @@ public class FileMetaData {
     private Set<String> sharedwithUsers;
 
     @OneToMany(mappedBy = "fileMetaData",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<FileVersion> versions;
+    private Set<FileVersion> versions;
 
     public FileMetaData(){
         this.uploadTime = LocalDateTime.now();

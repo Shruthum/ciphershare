@@ -14,7 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ciphershare.v1.entity.FileMetaData;
 import com.ciphershare.v1.entity.FileVersion;
+import com.ciphershare.v1.entity.User;
 import com.ciphershare.v1.repository.FileMetaDataRepository;
+import com.ciphershare.v1.repository.UserRepository;
 
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
@@ -27,14 +29,23 @@ public class FileService {
     @Autowired
     private FileMetaDataRepository fileMetaDataRepository;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private MinioClient minioClient;
     @Autowired
     private LoggingService loggingService;
+    @Autowired
+    private EmailService emailService;
 
     private final Path storageDirectory = Paths.get("storage/");
 
+    private User returnUser(String username) throws Exception{
+        return userRepository.findByusername(username).orElseThrow(() -> new RuntimeException("User not found!"));
+    }
+
     public FileMetaData storeFile(MultipartFile file,String username,String bucketName) throws Exception {
 
+        User user = returnUser(username);
         byte[] encryptedData = encryptionService.encrypt(file.getBytes());
         Path filePath = storageDirectory.resolve(file.getOriginalFilename()+".cipher");
         Files.write(filePath,encryptedData);
@@ -55,11 +66,15 @@ public class FileService {
         fileMetaDataRepository.save(filemetaData);
 
         loggingService.logaction(username,"UPLOADED","Uploaded File: "+file.getOriginalFilename());
+        emailService.sendEmail(user.getEmail(), "File Uploaded","Your file "+file.getOriginalFilename()+" has been uploaded");
         return filemetaData;
 
     }
 
-    public void shareFile(Long fileId,String username){
+    public void shareFile(Long fileId,String username) throws Exception {
+
+        User user = returnUser(username);
+
         FileMetaData fileMetaData = fileMetaDataRepository.findById(fileId).orElseThrow(
             () -> new RuntimeException("File not found")
         );
@@ -67,7 +82,9 @@ public class FileService {
         fileMetaDataRepository.save(fileMetaData);
 
         String owner = fileMetaData.getUploadedBy();
+
         loggingService.logaction(owner,"SHARED","Shared with: "+username);
+        emailService.sendEmail(user.getEmail(),"File Shared with","File has been shared with "+username);
     }
 
     public FileMetaData storeNewVersion(Long fileId,MultipartFile file,String bucketName) throws Exception {
@@ -76,6 +93,7 @@ public class FileService {
             () -> new RuntimeException("File not found!")
         );
 
+        User user = returnUser(fileMetaData.getUploadedBy());
         int newVersion = fileMetaData.getVersions().size() + 1;
 
         String newFileName = fileMetaData.getFileName()+"__v"+newVersion;
@@ -98,17 +116,20 @@ public class FileService {
         fileMetaData.addNewVersionOfFile(version);
 
         loggingService.logaction(fileMetaData.getUploadedBy(),"UPLOADED","Uploaded New Version of File: "+file.getOriginalFilename());
+
+        emailService.sendEmail(user.getEmail(), "File New Version Uploaded","Your file "+file.getOriginalFilename()+" has been uploaded");
         fileMetaDataRepository.save(fileMetaData);
 
         return fileMetaData;
     }
 
-    public FileMetaData rollbackFileVersion(Long fileId,int version){
+    public FileMetaData rollbackFileVersion(Long fileId,int version) throws Exception{
 
         FileMetaData fileMetaData = fileMetaDataRepository.findById(fileId).orElseThrow(
             () -> new RuntimeException("File not found!")
         );
 
+        User user = returnUser(fileMetaData.getUploadedBy());
         FileVersion versionToRestore = fileMetaData.getVersions()
                                                 .stream()
                                                 .filter(fileversion -> fileversion.getVersionNumber() == version)
@@ -120,6 +141,7 @@ public class FileService {
 
          loggingService.logaction(fileMetaData.getUploadedBy(), "ROLLBACK","Rollback to specified version: "+version);
 
+         emailService.sendEmail(user.getEmail(), "File Rollbacked","Your file has been rollbacked!");
          return fileMetaData;
     }
 

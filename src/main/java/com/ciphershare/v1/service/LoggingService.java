@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ciphershare.v1.entity.Logging;
+import com.ciphershare.v1.entity.Mapping;
 import com.ciphershare.v1.repository.LoggingRepository;
 
 
@@ -17,10 +18,12 @@ public class LoggingService {
 
     public void logaction(String username,String action,String details){
 
+        Mapping map = new Mapping();
+        map.setAction(action);
+        map.setDetails(details);
         Logging logs = new Logging();
         logs.setUsername(username);
-        logs.setDetails(details);
-        logs.getAction().add(action);
+        logs.getDetails().add(map);
         loggingRepository.save(logs);
     }
 

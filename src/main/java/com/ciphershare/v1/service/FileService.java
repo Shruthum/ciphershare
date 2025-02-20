@@ -28,6 +28,8 @@ public class FileService {
     private FileMetaDataRepository fileMetaDataRepository;
     @Autowired
     private MinioClient minioClient;
+    @Autowired
+    private LoggingService loggingService;
 
     private final Path storageDirectory = Paths.get("storage/");
 
@@ -51,6 +53,8 @@ public class FileService {
         filemetaData.setStoragePath(filePath.toString());
 
         fileMetaDataRepository.save(filemetaData);
+
+        loggingService.logaction(username,"UPLOADED","Uploaded File: "+file.getOriginalFilename());
         return filemetaData;
 
     }
@@ -61,6 +65,9 @@ public class FileService {
         );
         fileMetaData.getSharedwithUsers().add(username);
         fileMetaDataRepository.save(fileMetaData);
+
+        String owner = fileMetaData.getUploadedBy();
+        loggingService.logaction(owner,"SHARED","Shared with: "+username);
     }
 
     public FileMetaData storeNewVersion(Long fileId,MultipartFile file,String bucketName) throws Exception {
@@ -89,6 +96,8 @@ public class FileService {
         version.setCreatedAt(LocalDateTime.now());
 
         fileMetaData.addNewVersionOfFile(version);
+
+        loggingService.logaction(fileMetaData.getUploadedBy(),"UPLOADED","Uploaded New Version of File: "+file.getOriginalFilename());
         fileMetaDataRepository.save(fileMetaData);
 
         return fileMetaData;
@@ -108,6 +117,8 @@ public class FileService {
 
          fileMetaData.setFileName(versionToRestore.getStoragePath());
          fileMetaDataRepository.save(fileMetaData);
+
+         loggingService.logaction(fileMetaData.getUploadedBy(), "ROLLBACK","Rollback to specified version: "+version);
 
          return fileMetaData;
     }

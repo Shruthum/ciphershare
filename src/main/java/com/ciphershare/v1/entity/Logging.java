@@ -24,13 +24,11 @@ public class Logging {
     private Long loggingId;
 
     private String username;
-    private List<String> action;
-    private String details;
+    private List<Mapping> details;
     private LocalDateTime localDateTime;
 
-    public Logging(String username,List<String> action,String details){
+    public Logging(String username,List<Mapping> details){
         this.username = username;
-        this.action = action;
         this.details = details;
         this.localDateTime = LocalDateTime.now();
     }

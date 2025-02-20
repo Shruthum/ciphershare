@@ -2,6 +2,7 @@ package com.ciphershare.v1.controller;
 
 
 import java.io.InputStream;
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.HttpHeaders;
@@ -22,6 +23,7 @@ import com.ciphershare.v1.repository.FileMetaDataRepository;
 import com.ciphershare.v1.service.EncryptionService;
 import com.ciphershare.v1.service.FileSearchService;
 import com.ciphershare.v1.service.FileSharingService;
+import com.ciphershare.v1.service.LoggingService;
 import com.ciphershare.v1.service.MinioService;
 
 
@@ -39,6 +41,8 @@ public class FilesController {
     private FileSharingService fileSharingService;
     @Autowired
     private EncryptionService encryptionService;
+    @Autowired
+    private LoggingService loggingService;
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("username") String username){
@@ -48,13 +52,14 @@ public class FilesController {
     }
 
     @GetMapping("/download/{fileName}")
-    public ResponseEntity<byte[]> downloadFile(@PathVariable String fileName){
+    public ResponseEntity<byte[]> downloadFile(@PathVariable String fileName,Principal principal){
         try {
-
 
             InputStream inputStream = minioService.downloadFile(fileName);
             byte[] encrypted_data = inputStream.readAllBytes();
             byte[] decrypted_data = encryptionService.decrypt(encrypted_data);
+
+            loggingService.logaction(principal.getName(),"DOWNLOAD","Downloaded file: "+fileName);
 
             return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_OCTET_STREAM)

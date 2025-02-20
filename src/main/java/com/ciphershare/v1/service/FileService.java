@@ -94,7 +94,7 @@ public class FileService {
         return fileMetaData;
     }
 
-    public void rollbackFileVersion(Long fileId,int version){
+    public FileMetaData rollbackFileVersion(Long fileId,int version){
 
         FileMetaData fileMetaData = fileMetaDataRepository.findById(fileId).orElseThrow(
             () -> new RuntimeException("File not found!")
@@ -108,6 +108,8 @@ public class FileService {
 
          fileMetaData.setFileName(versionToRestore.getStoragePath());
          fileMetaDataRepository.save(fileMetaData);
+
+         return fileMetaData;
     }
 
     private void putInMinIO(String bucketName,String fileName,InputStream inputStream,String fileType,long fileSize){

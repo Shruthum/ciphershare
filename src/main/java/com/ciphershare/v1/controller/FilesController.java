@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ciphershare.v1.entity.FileMetaData;
 import com.ciphershare.v1.entity.FileMetaData.Access;
 import com.ciphershare.v1.repository.FileMetaDataRepository;
+import com.ciphershare.v1.service.EncryptionService;
 import com.ciphershare.v1.service.FileSearchService;
 import com.ciphershare.v1.service.FileSharingService;
 import com.ciphershare.v1.service.MinioService;
@@ -36,23 +37,29 @@ public class FilesController {
     private FileSearchService fileSearchService;
     @Autowired
     private FileSharingService fileSharingService;
+    @Autowired
+    private EncryptionService encryptionService;
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("username") String username){
 
-        String fileName = minioService.uploadFile(file,username);
-        return ResponseEntity.ok("File Uploaded: *"+fileName.substring(1, fileName.length()/2)+"**");
+        minioService.uploadFile(file,username);
+        return ResponseEntity.ok("File Uploaded Successfully!");
     }
 
     @GetMapping("/download/{fileName}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable String fileName){
         try {
+
+
             InputStream inputStream = minioService.downloadFile(fileName);
-            byte[] fileBytes = inputStream.readAllBytes();
+            byte[] encrypted_data = inputStream.readAllBytes();
+            byte[] decrypted_data = encryptionService.decrypt(encrypted_data);
+
             return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_OCTET_STREAM)
                         .header(HttpHeaders.CONTENT_DISPOSITION,"attachment: filename="+fileName)
-                        .body(fileBytes);
+                        .body(decrypted_data);
 
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();

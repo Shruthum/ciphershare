@@ -75,4 +75,13 @@ public class MinioService {
         }
     }
 
+    public void rollbackFile(String fileId,int version){
+        try {
+
+            FileMetaData fileMetaData = filePathStorageService.rollbackFileVersion(Long.parseLong(fileId),version);
+            fileSearchService.indexFileMetaData(fileMetaData);
+        }catch(Exception e){
+            throw new RuntimeException("Can't rollback the file version");
+        }
+    }
 }

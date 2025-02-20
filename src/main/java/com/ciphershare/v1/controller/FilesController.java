@@ -66,6 +66,19 @@ public class FilesController {
         }
     }
 
+    @PostMapping("/version/{filemetaDataId}")
+    public ResponseEntity<String> uploadNewVersion(@PathVariable String filemetaDataId,@RequestParam("file") MultipartFile file){
+        try {
+
+            minioService.uploadNewVersionFile(filemetaDataId, file);
+            return ResponseEntity.ok("New Version of File Uploaded Successfully!");
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+
+    }
+
     @GetMapping("/delete/{fileName}")
     public ResponseEntity<String> deleteFile(@PathVariable String fileName){
         minioService.deleteFile(fileName);

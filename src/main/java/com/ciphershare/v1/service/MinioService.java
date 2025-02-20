@@ -37,6 +37,18 @@ public class MinioService {
         }
     }
 
+    public void uploadNewVersionFile(String fileId,MultipartFile file){
+
+        try{
+
+            FileMetaData fileMetaData = filePathStorageService.storeNewVersion(Long.parseLong(fileId), file, bucketName);
+            fileSearchService.indexFileMetaData(fileMetaData);
+
+        }catch(Exception e){
+            throw new RuntimeException("Error uploading new version file: "+e.getMessage());
+        }
+    }
+
     public InputStream downloadFile(String fileName){
         // This function will return encrypt data
         try {

@@ -31,9 +31,10 @@ public class UserController {
         String name = request.get("name");
         String role = request.get("role");
         String password = request.get("password");
+        String email = request.get("email");
 
         try {
-            User reg_user = userservice.register(username,name,password,role);
+            User reg_user = userservice.register(username,name,password,role,email);
             return ResponseEntity.ok(reg_user);
         }catch(Exception e){
             return ResponseEntity.badRequest().body("Error user can't register");

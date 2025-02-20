@@ -26,6 +26,7 @@ public class User {
     private String username; //username for the backend and for the services
     private String name; //Name of the user
     private String password; //password has to be hashed before being stored in the database
+    private String email;
     @Enumerated(EnumType.STRING)
     private Role role;
     public enum Role {

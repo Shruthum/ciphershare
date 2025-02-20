@@ -44,6 +44,7 @@ public class FileSearchService {
                                     .field("fileType",fileMetaData.getFileType())
                                     .field("access",fileMetaData.getAccess().toString())
                                     .field("sharedwithUsers",fileMetaData.getSharedwithUsers().toString())
+                                    .field("fileVersions",fileMetaData.getVersions().toString())
                                 .endObject();
     }
     public void indexFileMetaData(FileMetaData fileMetaData) {
@@ -54,6 +55,7 @@ public class FileSearchService {
                                             .id(fileMetaData.getFilemetaDataId().toString())
                                             .source(builder);
             restHighLevelClient.index(request,RequestOptions.DEFAULT);
+
         }catch(Exception e){
             throw new RuntimeException("Error while indexing file metadata "+e.getMessage());
         }
@@ -72,7 +74,7 @@ public class FileSearchService {
             for(SearchHit hit : searchResponse.getHits().getHits()){
 
                 Map<String,Object> map = hit.getSourceAsMap();
-                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"),Long.parseLong((String) map.get("fileSize")), (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")),LocalDateTime.parse((String) map.get("expireTime")),Access.valueOf((String) map.get("access")),Collections.singleton((String)map.get("sharedwithUsers")));
+                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"),Long.parseLong((String) map.get("fileSize")), (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")),LocalDateTime.parse((String) map.get("expireTime")),Access.valueOf((String) map.get("access")),Collections.singleton((String)map.get("sharedwithUsers")),Collections.singleton(null));
                 results.add(metadata);
             }
 
@@ -111,7 +113,7 @@ public class FileSearchService {
             for(SearchHit hit : searchResponse.getHits().getHits()){
 
                 Map<String,Object> map = hit.getSourceAsMap();
-                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"),Long.parseLong((String) map.get("fileSize")), (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")),LocalDateTime.parse((String) map.get("expireTime")),Access.valueOf((String) map.get("access")),Collections.singleton((String)map.get("sharedwithUsers")));
+                FileMetaData metadata = new FileMetaData(Long.parseLong((String)map.get("filemetaDataId")), (String) map.get("fileName"),(String) map.get("fileType"),Long.parseLong((String) map.get("fileSize")), (String) map.get("storagePath"),(String) map.get("uploadedBy"), LocalDateTime.parse((String) map.get("uploadedAt")),LocalDateTime.parse((String) map.get("expireTime")),Access.valueOf((String) map.get("access")),Collections.singleton((String)map.get("sharedwithUsers")),Collections.singleton(null));
                 results.add(metadata);
             }
 

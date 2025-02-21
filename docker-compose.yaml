@@ -40,9 +40,36 @@ services:
     networks:
       - ciphershare-net
 
+  user-db:
+    image: postgres:latest
+    container_name: user-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=userdb
+    volumes:
+      - user_db_data:/var/lib/postgresql/data
+    networks:
+      - ciphershare-net
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6000:6000"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ciphershare-net
+
 volumes:
   minio-data:
   opensearch-data:
+  user_db_data:
+  redis_data:
+
 networks:
   ciphershare-net:
     driver: bridge

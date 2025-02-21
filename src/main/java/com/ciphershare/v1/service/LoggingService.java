@@ -9,7 +9,6 @@ import com.ciphershare.v1.entity.Mapping;
 import com.ciphershare.v1.repository.LoggingRepository;
 
 
-
 @Service
 public class LoggingService {
 
@@ -18,9 +17,10 @@ public class LoggingService {
 
     public void logaction(String username,String action,String details){
 
+        StringBuffer str = new StringBuffer(action+" "+details);
+
         Mapping map = new Mapping();
-        map.setAction(action);
-        map.setDetails(details);
+        map.setJoint(str.toString());
         Logging logs = new Logging();
         logs.setUsername(username);
         logs.getDetails().add(map);

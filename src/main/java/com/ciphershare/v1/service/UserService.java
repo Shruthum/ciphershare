@@ -30,11 +30,8 @@ public class UserService {
     @Autowired
     private JwtProvider jwtProvider;
 
-    public User register(String username,String name,String password,String role){
+    public User register(String username,String name,String password,String role,String email){
 
-        // if(userrepository)){
-        //     throw new RuntimeException("User already exists");
-        // }
         Optional<User> existing_user = userrepository.findByusername(username);
         if(existing_user.isPresent()){
             throw new RuntimeException("User already exists");
@@ -44,6 +41,7 @@ public class UserService {
         user.setName(name);
         user.setRole(Role.valueOf(role));
         user.setPassword(passwordencoder.encode(password));
+        user.setEmail(email);
 
         //saving the user into the repository
         return userrepository.save(user);

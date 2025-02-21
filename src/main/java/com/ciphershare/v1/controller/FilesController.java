@@ -6,6 +6,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import com.ciphershare.v1.entity.FileMetaData;
 import com.ciphershare.v1.entity.FileMetaData.Access;
 import com.ciphershare.v1.repository.FileMetaDataRepository;
 import com.ciphershare.v1.service.EncryptionService;
+import com.ciphershare.v1.service.FileCacheService;
 import com.ciphershare.v1.service.FileSearchService;
 import com.ciphershare.v1.service.FileSharingService;
 import com.ciphershare.v1.service.LoggingService;
@@ -42,6 +44,8 @@ public class FilesController {
     @Autowired
     private EncryptionService encryptionService;
     @Autowired
+    private FileCacheService fileCacheService;
+    @Autowired
     private LoggingService loggingService;
 
     @PostMapping("/upload")
@@ -53,22 +57,31 @@ public class FilesController {
 
     @GetMapping("/download/{fileName}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable String fileName,Principal principal){
-        try {
 
-            InputStream inputStream = minioService.downloadFile(fileName);
-            byte[] encrypted_data = inputStream.readAllBytes();
-            byte[] decrypted_data = encryptionService.decrypt(encrypted_data);
+        byte[] encrypted = fileCacheService.getCachedFile(fileName);
+        byte[] decrypted_data = new byte[0];
+        if(encrypted == null){
+            try {
 
-            loggingService.logaction(principal.getName(),"DOWNLOAD","Downloaded file: "+fileName);
+                InputStream inputStream = minioService.downloadFile(fileName);
+                encrypted = inputStream.readAllBytes();
+                if(encrypted == null){
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                }
+                decrypted_data = encryptionService.decrypt(encrypted);
 
+                loggingService.logaction(principal.getName(),"DOWNLOAD","Downloaded file: "+fileName);
+
+
+            } catch (Exception e) {
+                return ResponseEntity.internalServerError().build();
+            }
+
+        }
             return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_OCTET_STREAM)
                         .header(HttpHeaders.CONTENT_DISPOSITION,"attachment: filename="+fileName)
                         .body(decrypted_data);
-
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
     }
 
     @PostMapping("/version/{filemetaDataId}")
@@ -97,6 +110,7 @@ public class FilesController {
     @GetMapping("/delete/{fileName}")
     public ResponseEntity<String> deleteFile(@PathVariable String fileName){
         minioService.deleteFile(fileName);
+        fileCacheService.removeFileFromCache(fileName);
         return ResponseEntity.ok("File Deleted: "+fileName);
     }
 

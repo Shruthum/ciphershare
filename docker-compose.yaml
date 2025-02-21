@@ -13,6 +13,8 @@ services:
     volumes:
       - minio-data:/data
     command: server --console-address ":9001" /data
+    networks:
+      - ciphershare-net
 
   opensearch:
     image: opensearchproject/opensearch
@@ -26,7 +28,7 @@ services:
     volumes:
       - opensearch-data:/usr/share/opensearch/data
     networks:
-      - opensearch-net
+      - ciphershare-net
 
   dashboards:
     image: opensearchproject/opensearch-dashboards:latest
@@ -36,11 +38,11 @@ services:
     environment:
       - OPENSEARCH_HOSTS='["http://opensearch:9200"]'
     networks:
-      - opensearch-net
+      - ciphershare-net
 
 volumes:
   minio-data:
   opensearch-data:
 networks:
-  opensearch-net:
+  ciphershare-net:
     driver: bridge

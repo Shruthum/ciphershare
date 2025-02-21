@@ -37,6 +37,8 @@ public class FileService {
     @Autowired
     private EmailService emailService;
     @Autowired
+    private FileCacheService fileCacheService;
+    @Autowired
     private NotificationHandler notificationHandler;
 
     private final Path storageDirectory = Paths.get("storage/");
@@ -69,6 +71,7 @@ public class FileService {
 
         loggingService.logaction(username,"UPLOADED","Uploaded File: "+filename);
         emailService.sendEmail(user.getEmail(), "File Uploaded","Your file "+filename+" has been uploaded");
+        fileCacheService.storeFileinCache(filename, encryptedData);
         notificationHandler.broadcast("File Uploaded: "+filename);
         return filemetaData;
 
@@ -120,11 +123,9 @@ public class FileService {
         fileMetaData.addNewVersionOfFile(version);
 
         loggingService.logaction(fileMetaData.getUploadedBy(),"UPLOADED","Uploaded New Version of File: "+file.getOriginalFilename());
-
         emailService.sendEmail(user.getEmail(), "File New Version Uploaded","Your file "+file.getOriginalFilename()+" has been uploaded");
-
         notificationHandler.broadcast("New Version File is uploaded");
-
+        fileCacheService.storeFileinCache(newFileName, encryptedData);
         fileMetaDataRepository.save(fileMetaData);
 
         return fileMetaData;

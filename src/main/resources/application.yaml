@@ -10,6 +10,17 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: not-decided@gmail.com
+    password: project-password-not-decided-maybe
+    properties:
+        mail:
+            smtp:
+                auth: true
+                starttls:
+                    enable: true
 
 minio:
     url: http://localhost:9000

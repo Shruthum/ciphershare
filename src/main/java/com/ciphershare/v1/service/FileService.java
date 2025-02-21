@@ -36,6 +36,8 @@ public class FileService {
     private LoggingService loggingService;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private NotificationHandler notificationHandler;
 
     private final Path storageDirectory = Paths.get("storage/");
 
@@ -65,8 +67,9 @@ public class FileService {
 
         fileMetaDataRepository.save(filemetaData);
 
-        loggingService.logaction(username,"UPLOADED","Uploaded File: "+file.getOriginalFilename());
-        emailService.sendEmail(user.getEmail(), "File Uploaded","Your file "+file.getOriginalFilename()+" has been uploaded");
+        loggingService.logaction(username,"UPLOADED","Uploaded File: "+filename);
+        emailService.sendEmail(user.getEmail(), "File Uploaded","Your file "+filename+" has been uploaded");
+        notificationHandler.broadcast("File Uploaded: "+filename);
         return filemetaData;
 
     }
@@ -85,6 +88,7 @@ public class FileService {
 
         loggingService.logaction(owner,"SHARED","Shared with: "+username);
         emailService.sendEmail(user.getEmail(),"File Shared with","File has been shared with "+username);
+        notificationHandler.broadcast("File shared with "+username);
     }
 
     public FileMetaData storeNewVersion(Long fileId,MultipartFile file,String bucketName) throws Exception {
@@ -118,6 +122,9 @@ public class FileService {
         loggingService.logaction(fileMetaData.getUploadedBy(),"UPLOADED","Uploaded New Version of File: "+file.getOriginalFilename());
 
         emailService.sendEmail(user.getEmail(), "File New Version Uploaded","Your file "+file.getOriginalFilename()+" has been uploaded");
+
+        notificationHandler.broadcast("New Version File is uploaded");
+
         fileMetaDataRepository.save(fileMetaData);
 
         return fileMetaData;
@@ -142,6 +149,8 @@ public class FileService {
          loggingService.logaction(fileMetaData.getUploadedBy(), "ROLLBACK","Rollback to specified version: "+version);
 
          emailService.sendEmail(user.getEmail(), "File Rollbacked","Your file has been rollbacked!");
+
+         notificationHandler.broadcast("File has been rollbacked!");
          return fileMetaData;
     }
 

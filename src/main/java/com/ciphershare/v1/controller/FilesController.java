@@ -4,7 +4,6 @@ package com.ciphershare.v1.controller;
 import java.io.InputStream;
 import java.security.Principal;
 import java.util.List;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +52,13 @@ public class FilesController {
 
         minioService.uploadFile(file,username);
         return ResponseEntity.ok("File Uploaded Successfully!");
+    }
+
+    @PostMapping("/upload-multiple")
+    public ResponseEntity<String> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("username") String username){
+
+        minioService.multipleUploadFile(files, username);
+        return ResponseEntity.ok("Files Uploaded successfully!");
     }
 
     @GetMapping("/download/{fileName}")

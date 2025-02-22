@@ -38,9 +38,9 @@ File Storage System that enables secure file storage,sharing and real time multi
 
 ### Multi-User Collaboration
 
-- Real-time file editing with Redis Publish/Subscribe for **Instant Synchronization**(*Only this not implemented*).
-- Users activity tracking with logged to monitor file modifications.
-- Notifications (Email & Websockets) for file upload,download,new version upload,rollback.
+- [ ]Real-time file editing with Redis Publish/Subscribe for **Instant Synchronization**(*Only this not implemented*).
+- [x]Users activity tracking with logged to monitor file modifications.
+- [x]Notifications (Email & Websockets) for file upload,download,new version upload,rollback.
 
 
 ### docker-compose
@@ -56,15 +56,15 @@ File Storage System that enables secure file storage,sharing and real time multi
 
 | **Endpoint**                     | **Method** | **Description**               |
 |----------------------------------|------------|-------------------------------|
-| [x] /auth/v1/login               |    POST    | Authenticate users (jwt)      |
-| [x] /auth/v1/register            |    POST    | Register new users            |
-| [x] /files/upload                |    POST    | Upload a file                 |
-| [x] /files/upload-multiple       |    POST    | Upload multiple file          |
-| [x] /files/delete/{filename}     |    DELETE  | Delete a file                 |
-| [x] /files/download/{filename}   |    GET     | Download a file               |
-| [x] /files/search?keyword={query}|    GET     | Search files using opensearch |
-| [x] /files/metadata/{username}   |    GET     | Metadata by username          |
-| [x] /files/share/{fileid}        |    POST    | Sharing file
-| [x] /files/access/{fileid}       |    POST    | Revoking Access               |
-| [x] /files/version/{fileid}      |    POST    | Upload new version file       |
-| [x] /log/{username}              |    GET     | Logs of user                  |
+| /auth/v1/login               |    POST    | Authenticate users (jwt)      |
+| /auth/v1/register            |    POST    | Register new users            |
+| /files/upload                |    POST    | Upload a file                 |
+| /files/upload-multiple       |    POST    | Upload multiple file          |
+| /files/delete/{filename}     |    DELETE  | Delete a file                 |
+| /files/download/{filename}   |    GET     | Download a file               |
+| /files/search?keyword={query}|    GET     | Search files using opensearch |
+| /files/metadata/{username}   |    GET     | Metadata by username          |
+| /files/share/{fileid}        |    POST    | Sharing file
+| /files/access/{fileid}       |    POST    | Revoking Access               |
+| /files/version/{fileid}      |    POST    | Upload new version file       |
+| /log/{username}              |    GET     | Logs of user                  |

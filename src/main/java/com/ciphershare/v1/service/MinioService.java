@@ -1,6 +1,8 @@
 package com.ciphershare.v1.service;
 
 import java.io.InputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class MinioService {
     @Autowired
     private FileService filePathStorageService;
 
+    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     private MinIOConfigProperties minIOConfigProperties;
     private final String bucketName = minIOConfigProperties.getBucketName();
@@ -37,10 +40,26 @@ public class MinioService {
         }
     }
 
+    public void multipleUploadFile(MultipartFile[] files,String username){
+
+        for(MultipartFile file : files){
+            executorService.submit(
+                () -> {
+                    try {
+                        FileMetaData fileMetaData = filePathStorageService.storeFile(file,username, bucketName);
+                        fileSearchService.indexFileMetaData(fileMetaData);
+
+                    } catch (Exception e) {
+                        throw new RuntimeException("Error Uploading file: "+e.getMessage());
+                    }
+                }
+            );
+        }
+    }
+
     public void uploadNewVersionFile(String fileId,MultipartFile file){
 
         try{
-
             FileMetaData fileMetaData = filePathStorageService.storeNewVersion(Long.parseLong(fileId), file, bucketName);
             fileSearchService.indexFileMetaData(fileMetaData);
 

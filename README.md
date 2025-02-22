@@ -38,9 +38,9 @@ File Storage System that enables secure file storage,sharing and real time multi
 
 ### Multi-User Collaboration
 
-- [ ]Real-time file editing with Redis Publish/Subscribe for **Instant Synchronization**(*Only this not implemented*).
-- [x]Users activity tracking with logged to monitor file modifications.
-- [x]Notifications (Email & Websockets) for file upload,download,new version upload,rollback.
+- [ ] Real-time file editing with Redis Publish/Subscribe for **Instant Synchronization**(*Only this not implemented*).
+- [x] Users activity tracking with logged to monitor file modifications.
+- [x] Notifications (Email & Websockets) for file upload,download,new version upload,rollback.
 
 
 ### docker-compose

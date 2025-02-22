@@ -4,16 +4,14 @@ package com.ciphershare.v1.service;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FileCacheService {
 
-    @Autowired
-    private ConcurrentHashMap<String,byte[]> localCache;
+    private final int CACHE_SIZE = 30;
+    private ConcurrentHashMap<String,byte[]> localCache = new ConcurrentHashMap<>(CACHE_SIZE);
 
     private RedisTemplate<String,byte[]> redisTemplate;
     private static final long expiry = 30;

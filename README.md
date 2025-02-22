@@ -12,7 +12,7 @@ File Storage System that enables secure file storage,sharing and real time multi
 | **Caching**           | Redis + Local Cache                          |
 | **Messaging & Sync**  | Redis (Pub / Sub)[Real Time Collaboration]   |
 | **Notifications**     | Email & Websocket Alerts                     |
-|-----------------------|----------------------------------------------|
+
 
 
 ## Key Features
@@ -46,7 +46,8 @@ File Storage System that enables secure file storage,sharing and real time multi
 ### docker-compose
 
 - **Postgres,MongoDB,MinIO,Opensearch** and **Redis** everything under the same network
-- ```networks:
+- ```
+    networks:
          ciphershare-net:
             driver: bridge
 - Every Container will have volumes to *persist* the data,so that after restart it doesn't get lost.
@@ -55,16 +56,15 @@ File Storage System that enables secure file storage,sharing and real time multi
 
 | **Endpoint**                     | **Method** | **Description**               |
 |----------------------------------|------------|-------------------------------|
-| **/auth/v1/login**               |    POST    | Authenticate users (jwt)      |
-| **/auth/v1/register**            |    POST    | Register new users            |
-| **/files/upload**                |    POST    | Upload a file                 |
-| **/files/upload-multiple**       |    POST    | Upload multiple file          |
-| **/files/delete/{filename}**     |    DELETE  | Delete a file                 |
-| **/files/download/{filename}**   |    GET     | Download a file               |
-| **/files/search?keyword={query}**|    GET     | Search files using opensearch |
-| **/files/metadata/{username}**   |    GET     | Metadata by username          |
-| **/files/share/{fileid}**        |    POST    | Sharing file
-| **/files/access/{fileid}**       |    POST    | Revoking Access               |
-| **/files/version/{fileid}**      |    POST    | Upload new version file       |
-| **/log/{username}**              |    GET     | Logs of user                  |
-|----------------------------------|------------|-------------------------------|
+| /auth/v1/login               |    POST    | Authenticate users (jwt)      |
+| /auth/v1/register            |    POST    | Register new users            |
+| /files/upload                |    POST    | Upload a file                 |
+| /files/upload-multiple       |    POST    | Upload multiple file          |
+| /files/delete/{filename}     |    DELETE  | Delete a file                 |
+| /files/download/{filename}   |    GET     | Download a file               |
+| /files/search?keyword={query}|    GET     | Search files using opensearch |
+| /files/metadata/{username}   |    GET     | Metadata by username          |
+| /files/share/{fileid}        |    POST    | Sharing file
+| /files/access/{fileid}       |    POST    | Revoking Access               |
+| /files/version/{fileid}      |    POST    | Upload new version file       |
+| /log/{username}              |    GET     | Logs of user                  |
